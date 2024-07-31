@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EW WebView Test</title>
+
+    <script>
+        function onMessageReceivedFromEW(message) {
+            let json = JSON.parse(message)
+            switch (json.method) {
+                case 'openCamera':
+                    document.getElementById('imgElem').setAttribute('src', json.data.image)
+                    break;
+                case 'openCameraRoll':
+                    document.getElementById('imgElem').setAttribute('src', json.data.image)
+                    break;
+                case 'getPictAndTitle':
+                    document.getElementById('imgElem').setAttribute('src', json.data.pict)
+                    break;
+                default:
+                    document.getElementById('ew-response').innerHTML = message
+                    break;
+            }
+        }
+
+        function invokeMethod(methodName) {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': methodName,
+            }))
+        }
+
+        function openExternalBrowser() {
+            EwWebViewChannel.postMessage(
+                JSON.stringify({
+                    'method': 'openExternalBrowser',
+                    'arguments': {
+                        'url': 'https://google.com/',
+                    }
+                })
+            )
+        }
+
+        function openEmailEditor() {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': 'openEmailEditor',
+                'arguments': {
+                    'to': 'example-receiver@gmail.com',
+                    'subject': 'Example subject',
+                    'body': 'Example body.',
+                    'cc': 'example1@gmail.com, example2@gmail.com',
+                    'bcc': 'example11@gmail.com, example12@gmail.com',
+                }
+            }))
+        }
+
+        function callPhone() {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': 'callPhone',
+                'arguments': {
+                    'phoneNumber': '0123456789',
+                }
+            }))
+        }
+
+        function getLocationInformation() {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': 'getLocationInformation',
+            }))
+        }
+
+        function getPictAndTitle() {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': 'getPictAndTitle',
+                'arguments': {
+                    'size': 16,
+                }
+            }))
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <div>&nbsp</div>
+    <div>&nbsp</div>
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('openDrawer')">openDrawer</button>
+    </div>
+
+    <!-- <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('displayChatScreen')">displayChatScreen</button>
+    </div> -->
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="openExternalBrowser()">openExternalBrowser</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="openEmailEditor()">openEmailEditor</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="callPhone()">callPhone</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="getLocationInformation()">getLocationInformation</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('openCamera')">openCamera</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('openCameraRoll')">openCameraRoll</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('openOSShareDialog')">openShareDialog</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('openOSNotificationSetting')">openOSNotificationSetting</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="getPictAndTitle()">getPictAndTitle</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div>
+        <button onclick="invokeMethod('getTextInputHistory')">getTextInputHistory</button>
+    </div>
+
+    <div>&nbsp</div>
+    <div id="ew-response"></div>
+
+    <div>&nbsp</div>
+    <img id="imgElem"></img>
+</body>
+
+</html>
