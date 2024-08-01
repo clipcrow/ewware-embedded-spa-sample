@@ -3,13 +3,15 @@ import { Application } from "oak";
 const app = new Application();
 
 app.use(async (ctx) => {
+  console.log(ctx.request.url);
+  /*
   const secret = ctx.request.headers.get("X-Workware-Signature");
-  console.log(ctx.request);
   if (secret !== "essential-workware") {
     ctx.response.status = 401;
     ctx.response.body = "401 Unauthorized";
     return;
   };
+  */
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public`,
