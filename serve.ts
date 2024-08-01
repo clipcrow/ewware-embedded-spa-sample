@@ -2,20 +2,23 @@ import { Application } from "oak";
 
 const app = new Application();
 
-app.use(async (context, next) => {
-  const secret = context.request.headers.get("X-Workware-Signature");
-  if (secret === "essential-workware") {
-    return await next();
+app.use(async (ctx) => {
+  const secret = ctx.request.headers.get("X-Workware-Signature");
+  console.log(ctx.request);
+  if (secret !== "essential-workware") {
+    ctx.response.status = 401;
+    ctx.response.body = "401 Unauthorized";
+    return;
   };
-  context.response.status = 401;
-  context.response.body = "401 Unauthorized";
-});
-
-app.use(async (context) => {
-  await context.send({
-    root: `${Deno.cwd()}/public`,
-    index: "index.html",
-  });
+  try {
+    await ctx.send({
+      root: `${Deno.cwd()}/public`,
+      index: "index.html",
+    });
+  } catch {
+    ctx.response.status = 404;
+    ctx.response.body = "404 File not found";
+  }
 });
 
 await app.listen({ port: 8000 });
