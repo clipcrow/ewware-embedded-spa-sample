@@ -8,6 +8,7 @@ app.use(async (context, next) => {
     return await next();
   };
   context.response.status = 401;
+  context.response.body = "401 Unauthorized";
 });
 
 app.use(async (context) => {
