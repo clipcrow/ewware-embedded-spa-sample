@@ -78,28 +78,12 @@
                 }
             }))
         }
-
-        (function () {
-            let params = new URL(window.location.href).searchParams
-            if (params) {
-                let workspace = params.get('workspace')
-                let user = params.get('user')
-                if (workspace) {
-                    document.getElementById('workspace').innerHTML =
-                        'workspace uuid: ' + workspace + '&nbsp'
-                }
-                if (user) {
-                    document.getElementById('user').innerHTML =
-                        'user uuid: ' + user + '&nbsp'
-                }
-            }
-        })();
     </script>
 </head>
 
 <body>
-    <div id="workspace">&nbsp</div>
-    <div id="user">&nbsp</div>
+    <div >&nbsp</div>
+    <div >&nbsp</div>
     <div>&nbsp</div>
 
     <div>
