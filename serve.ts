@@ -9,6 +9,7 @@ app.use(async (ctx) => {
     ctx.response.body = `401 Unauthorized. ${secret}`;
     return;
   };
+  console.log(ctx.request.headers)
   console.log(ctx.request.url.searchParams);  
   try {
     await ctx.send({
