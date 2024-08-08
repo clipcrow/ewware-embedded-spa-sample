@@ -7,7 +7,7 @@
     <title>EW WebView Test</title>
 
     <script>
-        function onMessageReceivedFromEW(message) {
+        function onMessageReceived(message) {
             let json = JSON.parse(message)
             switch (json.method) {
                 case 'openCamera':
@@ -17,6 +17,7 @@
                     document.getElementById('imgElem').setAttribute('src', json.data.image)
                     break;
                 case 'getPictAndTitle':
+                    document.getElementById('ew-response').innerHTML =  json.data.title
                     document.getElementById('imgElem').setAttribute('src', json.data.pict)
                     break;
                 default:
@@ -31,15 +32,13 @@
             }))
         }
 
-        function openExternalBrowser() {
-            EwWebViewChannel.postMessage(
-                JSON.stringify({
-                    'method': 'openExternalBrowser',
-                    'arguments': {
-                        'url': 'https://google.com/',
-                    }
-                })
-            )
+        function openWebView() {
+            EwWebViewChannel.postMessage(JSON.stringify({
+                'method': 'openWebView',
+                'arguments': {
+                    'url': 'https://google.com/',
+                }
+            }))
         }
 
         function openEmailEditor() {
@@ -64,12 +63,6 @@
             }))
         }
 
-        function getLocationInformation() {
-            EwWebViewChannel.postMessage(JSON.stringify({
-                'method': 'getLocationInformation',
-            }))
-        }
-
         function getPictAndTitle() {
             EwWebViewChannel.postMessage(JSON.stringify({
                 'method': 'getPictAndTitle',
@@ -87,12 +80,12 @@
     <div>&nbsp</div>
 
     <div>
-        <button onclick="invokeMethod('openDrawer')">openDrawer</button>
+        <button onclick="invokeMethod('openNavigationDrawer')">openNavigationDrawer</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="openExternalBrowser()">openExternalBrowser</button>
+        <button onclick="openWebView()">openWebView</button>
     </div>
 
     <div>&nbsp</div>
@@ -107,7 +100,7 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="getLocationInformation()">getLocationInformation</button>
+        <button onclick="invokeMethod('getGeoLocation')">getGeoLocation</button>
     </div>
 
     <div>&nbsp</div>
@@ -117,17 +110,17 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openCameraRoll')">openCameraRoll</button>
+        <button onclick="invokeMethod('openPhotoLibrary')">openPhotoLibrary</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openOSShareDialog')">openShareDialog</button>
+        <button onclick="invokeMethod('openShare')">openShare</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openOSNotificationSetting')">openOSNotificationSetting</button>
+        <button onclick="invokeMethod('openNotificationSetting')">openNotificationSetting</button>
     </div>
 
     <div>&nbsp</div>
@@ -137,7 +130,7 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('getTextInputHistory')">getTextInputHistory</button>
+        <button onclick="invokeMethod('openTextInputHistory')">openTextInputHistory</button>
     </div>
 
     <div>&nbsp</div>
