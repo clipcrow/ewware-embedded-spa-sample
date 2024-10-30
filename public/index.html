@@ -44,17 +44,7 @@
             )
         }
 
-        function listChat() {
-            let title = document.getElementById("title-for-list-chat").value
-            EwWebViewChannel.postMessage(
-                JSON.stringify({
-                    'method': 'listChat',
-                    'arguments': {
-                        'title': title,
-                    }
-                })
-            )
-        }
+        
 
         function openWebView() {
             EwWebViewChannel.postMessage(
@@ -116,8 +106,7 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="listChat()">listChat</button>
-        <input id="title-for-list-chat" type="text" placeholder="Specify title here">
+        <button onclick="invokeMethod('listChat')">listChat</button>
     </div>
 
     <div>&nbsp</div>
