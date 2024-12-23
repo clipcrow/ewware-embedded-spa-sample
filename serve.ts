@@ -4,8 +4,8 @@ const app = new Application();
 
 app.use(async (ctx) => {
   const { headers, url: { searchParams } } = ctx.request;
-  const secret = headers.get("X-Workware-Signature");
-  if (secret !== "essential-workware") {
+  const secret = headers.get("X-ClipCrow-Signature");
+  if (secret !== "clipcrow") {
     ctx.response.status = 401;
     ctx.response.body = `401 Unauthorized. ${secret}`;
     return;
