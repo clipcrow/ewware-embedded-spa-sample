@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EW WebView Test</title>
-
     <script>
-        function onMessageReceived(message) {
+        window.addEventListener('message', (event) => {
+            let message = event.data;
+            handleEventFromParent(message)
+        });
+
+        function handleEventFromParent(message){
             let json = JSON.parse(message)
             switch (json.method) {
                 case 'openCamera':
@@ -26,6 +30,40 @@
             }
         }
 
+        function onMessageReceived(message) {
+            handleEventFromParent(message)
+        }
+
+        function postMessageWithData(data) {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
+                EwWebViewChannel.postMessage(data)
+            } else {
+                window.parent.postMessage({
+                    type: "EW_EVENT",
+                    data: data
+                }, "*")
+            }
+        }
+        function notifyFlutter(method) {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
+                invokeMethod(method)
+            } else {
+                if (method === 'openNotificationSetting') {
+                    alert(`${method} is not support for web`)
+                } else {
+                    window.parent.postMessage({
+                        type: "EW_EVENT",
+                        data: JSON.stringify({
+                            'method': method,
+                        })
+                    }, "*")
+                }
+            }
+        }
+
         function invokeMethod(methodName) {
             EwWebViewChannel.postMessage(JSON.stringify({
                 'method': methodName,
@@ -34,7 +72,7 @@
 
         function openChat() {
             let title = document.getElementById("title-for-open-chat").value
-            EwWebViewChannel.postMessage(
+            postMessageWithData(
                 JSON.stringify({
                     'method': 'openChat',
                     'arguments': {
@@ -47,7 +85,7 @@
         
 
         function openWebView() {
-            EwWebViewChannel.postMessage(
+            postMessageWithData(
                 JSON.stringify({
                     'method': 'openWebView',
                     'arguments': {
@@ -58,20 +96,20 @@
         }
 
         function openEmailEditor() {
-            EwWebViewChannel.postMessage(JSON.stringify({
-                'method': 'openEmailEditor',
-                'arguments': {
-                    'to': 'example-receiver@gmail.com',
-                    'subject': 'Example subject',
-                    'body': 'Example body.',
-                    'cc': 'example1@gmail.com, example2@gmail.com',
-                    'bcc': 'example11@gmail.com, example12@gmail.com',
-                }
+            postMessageWithData(JSON.stringify({
+            'method': 'openEmailEditor',
+            'arguments': {
+                'to': 'example-receiver@gmail.com',
+                'subject': 'Example subject',
+                'body': 'Example body.',
+                'cc': 'example1@gmail.com, example2@gmail.com',
+                'bcc': 'example11@gmail.com, example12@gmail.com',
+            }
             }))
         }
 
         function callPhone() {
-            EwWebViewChannel.postMessage(JSON.stringify({
+            postMessageWithData(JSON.stringify({
                 'method': 'callPhone',
                 'arguments': {
                     'phone_number': '0123456789',
@@ -80,7 +118,7 @@
         }
 
         function getPictAndTitle() {
-            EwWebViewChannel.postMessage(JSON.stringify({
+            postMessageWithData(JSON.stringify({
                 'method': 'getPictAndTitle',
                 'arguments': {
                     'size': 16,
@@ -95,7 +133,7 @@
     <div>&nbsp</div>
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openNavigationDrawer')">openNavigationDrawer</button>
+        <button onclick="notifyFlutter('openNavigationDrawer')">openNavigationDrawer</button>
     </div>
 
     <div>&nbsp</div>
@@ -106,7 +144,7 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('listChat')">listChat</button>
+        <button onclick="notifyFlutter('listChat')">listChat</button>
     </div>
 
     <div>&nbsp</div>
@@ -126,27 +164,27 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('getGeoLocation')">getGeoLocation</button>
+        <button onclick="notifyFlutter('getGeoLocation')">getGeoLocation</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openCamera')">openCamera</button>
+        <button onclick="notifyFlutter('openCamera')">openCamera</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openPhotoLibrary')">openPhotoLibrary</button>
+        <button onclick="notifyFlutter('openPhotoLibrary')">openPhotoLibrary</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openShare')">openShare</button>
+        <button onclick="notifyFlutter('openShare')">openShare</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openNotificationSetting')">openNotificationSetting</button>
+        <button onclick="notifyFlutter('openNotificationSetting')">openNotificationSetting</button>
     </div>
 
     <div>&nbsp</div>
@@ -156,12 +194,12 @@
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('openTextInputHistory')">openTextInputHistory</button>
+        <button onclick="notifyFlutter('openTextInputHistory')">openTextInputHistory</button>
     </div>
 
     <div>&nbsp</div>
     <div>
-        <button onclick="invokeMethod('getScreen')">getScreen</button>
+        <button onclick="notifyFlutter('getScreen')">getScreen</button>
     </div>
 
     <div>&nbsp</div>
